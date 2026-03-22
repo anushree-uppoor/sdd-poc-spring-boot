@@ -24,6 +24,72 @@ SDD is a structured development workflow:
 
 ---
 
+# 🧩 Specify CLI (Spec Kit Plus) Setup
+
+Before starting SDD, install **Specify CLI (Spec Kit Plus)**.
+
+---
+
+## ✅ Option 1: Persistent Installation (Recommended)
+
+Install once and use globally:
+
+```bash
+# Install via pip
+pip install specifyplus
+
+# OR using uv
+uv tool install specifyplus
+```
+
+### 🔄 Upgrade
+```bash
+pip install -U specifyplus
+
+# OR using uv
+uv tool upgrade specifyplus
+```
+### ❌ Uninstall
+```bash
+pip uninstall specifyplus
+
+# OR using uv
+uv tool uninstall specifyplus
+```
+
+### 🚀 Initialize Project
+
+#### New Project
+```bash
+specifyplus init <PROJECT_NAME>
+or
+sp init <PROJECT_NAME>
+```
+#### Existing Project
+```bash
+specifyplus init . --ai cursor
+# or
+sp init --here --ai cursor
+```
+#### Verify Installation
+```bash
+specifyplus check
+# or
+sp check
+```
+
+##  Option 2: One-time Usage (No Install)
+Run without installing:
+```bash
+uvx specifyplus --help
+uvx specifyplus init <PROJECT_NAME>
+
+# or
+uvx sp init <PROJECT_NAME>
+```
+
+---
+
 # ⚙️ Tools Overview
 
 | Tool | Purpose |
@@ -223,7 +289,7 @@ specs/<feature-dir>/         # One folder per feature (often matches branch name
   spec.md
   plan.md
   tasks.md                   # Checklist tasks (T###) + optional review tasks (CR###, SG###)
-  SDD-TIMELINE.md            # Optional UTC log of when each phase completed
+  SDD-TIMELINE.md            # Optional: Phase | Started | Completed (UTC); append-only
   checklists/, contracts/, …
 
 history/prompts/             # Prompt History Records (PHRs) from /sp.phr and command tails
@@ -464,6 +530,6 @@ Several `/sp.*` command specs ask the agent to create a PHR **after** the main w
 7. Follow handoffs: **plan → tasks → implement**.  
 8. Run **`/sp.review`** (CodeRabbit + Semgrep tasks) **or** **`/sp.coderabbit`** (CodeRabbit only); fix **`CR###` / `SG###`** if needed.  
 9. Run **`/sp.sync-master-spec`** then **`/sp.git.commit_pr`**.  
-10. Keep **`SDD-TIMELINE.md`** updated if you care about phase timing.
+10. **`SDD-TIMELINE.md`:** optional; many flows **append** rows automatically (Option A in **`/sp.*`** specs)—you do not have to edit it by hand unless you want to.
 
 ---

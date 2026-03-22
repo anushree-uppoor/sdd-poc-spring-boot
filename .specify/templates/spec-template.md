@@ -82,6 +82,13 @@
   Fill them out with the right functional requirements.
 -->
 
+### Constitution alignment *(mandatory)*
+
+Functional requirements and acceptance scenarios MUST be implementable under
+`.specify/memory/constitution.md`: layered **Controller → Service → Repository**,
+**DTO-only** REST surface, **Flyway-only** relational schema changes, and **test-first**
+delivery for new behavior.
+
 ### Functional Requirements
 
 - **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]

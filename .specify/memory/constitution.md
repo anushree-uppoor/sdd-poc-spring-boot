@@ -1,55 +1,81 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report (machine-readable)
+- Version change: unversioned-template → 1.0.0
+- Principles: template placeholders → I. Layered Architecture; II. DTO Enforcement;
+  III. Database Management; IV. TDD Mandatory (consolidated from six-slot template)
+- Added sections: Technology & Stack Constraints; Development Workflow
+- Removed sections: none (merged unused principle slots into four explicit principles)
+- Templates: ✅ .specify/templates/plan-template.md | ✅ .specify/templates/spec-template.md |
+  ✅ .specify/templates/tasks-template.md | ⚠️ .specify/templates/commands/*.md (directory absent)
+- Follow-up TODOs: none
+-->
+
+# SDD POC Spring Boot Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Layered Architecture (NON-NEGOTIABLE)
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+- HTTP adapters MUST live in controllers only; persistence MUST live in repositories
+  only; business rules and DTO mapping MUST live in the service layer.
+- Dependency flow MUST be **Controller → Service → Repository**; controllers MUST NOT
+  call repositories directly or embed business logic.
+- **Rationale**: Keeps concerns testable, avoids leaking persistence and domain rules
+  into the web layer.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. DTO Enforcement (NON-NEGOTIABLE)
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+- REST APIs MUST NOT expose JPA entities; use **Request** DTOs for input and **Response**
+  DTOs for output, with validation on request DTOs as required by the API contract.
+- Mapping between entities and DTOs MUST occur in the service layer (or dedicated
+  mappers invoked from services), not in controllers.
+- **Rationale**: Stable API contracts, controlled serialization, and clear validation
+  boundaries.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Database Management (NON-NEGOTIABLE)
 
-### [PRINCIPLE_6_NAME]
+- Relational schema changes MUST be delivered **only** through **Flyway** migrations
+  under `src/main/resources/db/migration` (versioned scripts); ad-hoc DDL or
+  Hibernate-only schema drift for shared environments is not permitted.
+- **Rationale**: Reproducible environments, reviewable schema history, and safe rollout.
 
+### IV. TDD Mandatory (NON-NEGOTIABLE)
 
-[PRINCIPLE__DESCRIPTION]
+- Development MUST follow **Test → Fail → Implement → Refactor**; production code MUST
+  not be added without a failing test that defines the behavior first.
+- **Rationale**: Executable specifications, regression safety, and design feedback before
+  implementation hardens.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Technology & Stack Constraints
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- **Runtime**: Java 17+, Spring Boot, Spring Web MVC, Spring Data JPA, Jakarta Validation.
+- **Build**: Maven; configuration via `application.yml` (and profiles as needed).
+- **Persistence**: H2 unless a feature plan explicitly targets another store; JPA entities
+  remain internal to the backend.
+- **APIs**: Contract-first; implement endpoints per OpenAPI in
+  `design-inputs/api-contracts/` and keep responses aligned with DTO rules above.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Development Workflow
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- Use Spec-Driven Development: specification and plan before implementation; one active
+  **spec folder per branch** under `specs/<feature>/`.
+- Feature artifacts: `spec.md`, `plan.md`, `tasks.md` maintained per spec-kit workflow;
+  implementation MUST satisfy this constitution and the feature spec.
+- Code review MUST check layered boundaries, DTO usage, Flyway-only schema changes, and
+  evidence of test-first delivery for new behavior.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- This constitution **supersedes** conflicting informal practices for this repository.
+- **Amendments**: Propose via pull request; update this file, bump **Version** per
+  semantic rules (MAJOR: incompatible removals or redefinitions of principles; MINOR:
+  new or materially expanded governance; PATCH: clarifications and non-semantic edits),
+  and set **Last Amended** to the merge date.
+- **Compliance**: Authors and reviewers MUST verify plans, tasks, and code against the
+  Core Principles before merge; violations require an explicit constitution amendment or
+  an approved, time-boxed exception documented in the feature plan’s complexity
+  tracking.
+- **Runtime guidance**: Cursor rules under `.cursor/rules/active-rules/` and project
+  README elaborate stack and style; they MUST NOT contradict this document.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-03-22 | **Last Amended**: 2026-03-22

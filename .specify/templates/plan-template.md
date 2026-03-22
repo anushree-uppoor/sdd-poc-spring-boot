@@ -31,7 +31,17 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify against `.specify/memory/constitution.md` (non-negotiable for this repo):
+
+- **Layered architecture**: Design keeps **Controller → Service → Repository**; no
+  business logic or persistence in controllers.
+- **DTOs**: API shape uses request/response DTOs; entities stay internal; mapping in
+  services.
+- **Database**: Schema evolution planned as **Flyway** migrations only (no ad-hoc DDL).
+- **TDD**: Work breakdown includes **failing tests before implementation** for new
+  behavior; no untested production code.
+
+Document justified exceptions in **Complexity Tracking** below.
 
 ## Project Structure
 
